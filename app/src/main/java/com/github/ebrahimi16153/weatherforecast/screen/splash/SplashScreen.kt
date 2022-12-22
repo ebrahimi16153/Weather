@@ -31,7 +31,7 @@ fun SplashScreen(navController: NavController) {
            // lottie splash animation
             val splashLottieFile by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.splash))
             //lottie loading animation
-            val loading by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.loading))
+            val loading by rememberLottieComposition(spec = LottieCompositionSpec.Url("https://assets1.lottiefiles.com/packages/lf20_0omj4rn0.json"))
             // lottie settings
             val progress by animateLottieCompositionAsState(
                 composition = splashLottieFile,
