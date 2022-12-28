@@ -11,9 +11,9 @@ val Teal200 = Color(0xFF03DAC5)
 
 // my color
 
-val darkBackground = Color(0xFF707070)
-val darkText = Color(0xFF000000)
+val darkBackground = Color(0xFF474554)
+val darkText = Color(0xFFFEFEFE)
 
 
-val lightBackground = Color(0xFFFFF1C9)
-val lightText = Color(0xFF000000)
+val lightBackground = Color(0xFFFEFEFE)
+val lightText = Color(0xFF3B3B3B)

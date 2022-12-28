@@ -11,13 +11,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.rememberImagePainter
 import com.airbnb.lottie.compose.*
 import com.github.ebrahimi16153.weatherforecast.R
 import com.github.ebrahimi16153.weatherforecast.color.MyColors
@@ -54,12 +53,12 @@ fun MainScreen(
 @Composable
 fun MainScaffold(navController: NavController, city: String?, weather: Weather) {
 
-    Scaffold(topBar = { MyAppBar(navController = navController) }) {
+    Scaffold {
 
         Surface(modifier = Modifier.fillMaxSize(), color = MyColors().background.value) {
             Column(
                 modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Bottom,
+                verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
@@ -79,12 +78,13 @@ fun Loading() {
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             //loading animation
             val loading by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.loading))
             val progress by animateLottieCompositionAsState(
                 composition = loading,
                 isPlaying = true,
-                iterations = 5,
+                iterations = LottieConstants.IterateForever,
                 speed = 1.0f
             )
             LottieAnimation(
@@ -92,7 +92,6 @@ fun Loading() {
                 progress = { progress },
                 modifier = Modifier.size(180.dp)
             )
-
         }
     }
 }
@@ -106,7 +105,8 @@ fun Error() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            //error animation
+
+        //error animation
             val error by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.interneterror))
             val progress by animateLottieCompositionAsState(
                 composition = error,
@@ -135,7 +135,7 @@ fun MyAppBar(navController: NavController) {
     TopAppBar(
         modifier = Modifier.fillMaxWidth(),
         title = {},
-        backgroundColor = MyColors().background.value,
+        backgroundColor = Color.Transparent,
         elevation = 0.dp,
         actions = {
             IconButton(onClick = { /*TODO*/ }) {
@@ -152,19 +152,31 @@ fun MyAppBar(navController: NavController) {
 @Composable
 fun MainContent(weather: Weather, navController: NavController) {
     Surface(modifier = Modifier.fillMaxWidth(), color = MyColors().background.value) {
+
+        Box(modifier = Modifier.fillMaxSize()) {
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                painter = painterResource(id = R.drawable.day),
+                contentDescription = "",
+                contentScale = ContentScale.Crop
+            )
+        }
         Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            Box() {
-                Image(modifier = Modifier.size(100.dp),painter = painterResource(id = R.drawable.e11d), contentDescription ="" )
-                Text(text = "25°", fontSize = 40.sp, fontWeight = FontWeight.Bold)
-            }
+            MyAppBar(navController = navController)
 
         }
+
+
+
+
+
     }
+
+
 }
 
 
