@@ -16,4 +16,4 @@ val darkText = Color(0xFFFEFEFE)
 
 
 val lightBackground = Color(0xFFFEFEFE)
-val lightText = Color(0xFF3B3B3B)
+val lightText = Color(0xFFfefefe)

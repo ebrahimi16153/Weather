@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.LocationOn
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -14,7 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.*
@@ -22,6 +25,8 @@ import com.github.ebrahimi16153.weatherforecast.R
 import com.github.ebrahimi16153.weatherforecast.color.MyColors
 import com.github.ebrahimi16153.weatherforecast.data.DataOrException
 import com.github.ebrahimi16153.weatherforecast.model.Weather
+import com.github.ebrahimi16153.weatherforecast.util.formatDate
+import com.github.ebrahimi16153.weatherforecast.util.formatDaysDate
 import com.github.ebrahimi16153.weatherforecast.viewmodel.MainViewModel
 
 @Composable
@@ -131,6 +136,35 @@ fun Error() {
 }
 
 @Composable
+fun MainContent(weather: Weather, navController: NavController) {
+    Surface(modifier = Modifier.fillMaxWidth(), color = MyColors().background.value) {
+
+        Column(modifier = Modifier.fillMaxSize()) {
+
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                painter = painterResource(id = R.drawable.day),
+                contentDescription = "",
+                contentScale = ContentScale.Crop
+            )
+        }
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            MyAppBar(navController = navController)
+            LocationAndDate(weather = weather)
+            WeatherIconAndDescription(weather = weather)
+
+        }
+    }
+
+}
+
+
+@Composable
 fun MyAppBar(navController: NavController) {
     TopAppBar(
         modifier = Modifier.fillMaxWidth(),
@@ -150,34 +184,57 @@ fun MyAppBar(navController: NavController) {
 
 
 @Composable
-fun MainContent(weather: Weather, navController: NavController) {
-    Surface(modifier = Modifier.fillMaxWidth(), color = MyColors().background.value) {
+fun LocationAndDate(weather: Weather) {
+    //location
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+        Icon(
+            modifier = Modifier
+                .size(20.dp)
+                .padding(top = 1.dp),
+            imageVector = Icons.Rounded.LocationOn,
+            contentDescription = "location icon",
+            tint = MyColors().text.value
+        )
 
-        Box(modifier = Modifier.fillMaxSize()) {
-            Image(
-                modifier = Modifier.fillMaxSize(),
-                painter = painterResource(id = R.drawable.day),
-                contentDescription = "",
-                contentScale = ContentScale.Crop
-            )
-        }
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            MyAppBar(navController = navController)
-
-        }
-
-
-
-
+        Text(
+            modifier = Modifier.padding(start = 2.dp),
+            text = weather.city?.name.toString(),
+            color = MyColors().text.value,
+            fontWeight = FontWeight.Bold,
+            fontSize = 20.sp
+        )
 
     }
 
+    //date
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+
+        Text(
+            modifier = Modifier.padding(start = 10.dp),
+            text = formatDaysDate(formatDate(weather.list?.get(0)?.dt!!)),
+            color = MyColors().text.value
+        )
+    }
 
 }
 
 
+@Composable
+fun WeatherIconAndDescription(weather: Weather) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
 
+        Image(
+            modifier = Modifier.size(80.dp),
+            painter = painterResource(id = R.drawable.m01d),
+            contentDescription = "icon"
+        )
+
+
+    }
+
+}
