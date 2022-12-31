@@ -3,6 +3,9 @@ package com.github.ebrahimi16153.weatherforecast.screen.main
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.LocationOn
@@ -12,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -29,6 +33,7 @@ import com.github.ebrahimi16153.weatherforecast.util.formatDate
 import com.github.ebrahimi16153.weatherforecast.util.formatDaysDate
 import com.github.ebrahimi16153.weatherforecast.viewmodel.MainViewModel
 
+@ExperimentalMaterialApi
 @Composable
 fun MainScreen(
     navController: NavController,
@@ -54,25 +59,60 @@ fun MainScreen(
     }
 }
 
+@ExperimentalMaterialApi
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainScaffold(navController: NavController, city: String?, weather: Weather) {
 
-    Scaffold {
-
-        Surface(modifier = Modifier.fillMaxSize(), color = MyColors().background.value) {
+    // bottom sheet
+    BottomSheetScaffold(
+        sheetBackgroundColor = Color(0xf0007aff),
+        modifier = Modifier.blur(100.dp),
+        sheetShape = CircleShape.copy(
+            topStart = CornerSize(15.dp),
+            topEnd = CornerSize(15.dp),
+            bottomEnd = CornerSize(0.dp),
+            bottomStart = CornerSize(0.dp)
+        ),
+        sheetContent = {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                MainContent(weather = weather, navController = navController)
+                Surface(modifier = Modifier.padding(10.dp)
+                    .height(5.dp)
+                    .width(50.dp), color = Color.Black, shape = RoundedCornerShape(15.dp)
+                ) {}
+
+
 
             }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.7f),
+            ) {
+                // top of Bottom sheet
+
+                Text(
+                    text = "Bottom sheet",
+                    fontSize = 60.sp
+                )
+            }
+        },
+        sheetPeekHeight = 100.dp
+    ) {
+        Box(modifier = Modifier.fillMaxWidth()) {
+
+            MainContent(weather = weather, navController = navController)
         }
 
     }
+
 }
 
 @Composable
@@ -111,7 +151,7 @@ fun Error() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-        //error animation
+            //error animation
             val error by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.interneterror))
             val progress by animateLottieCompositionAsState(
                 composition = error,
@@ -135,34 +175,32 @@ fun Error() {
 
 }
 
+@ExperimentalMaterialApi
 @Composable
 fun MainContent(weather: Weather, navController: NavController) {
-    Surface(modifier = Modifier.fillMaxWidth(), color = MyColors().background.value) {
 
-        Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize()) {
 
-            Image(
-                modifier = Modifier.fillMaxSize(),
-                painter = painterResource(id = R.drawable.day),
-                contentDescription = "",
-                contentScale = ContentScale.Crop
-            )
-        }
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        Image(
+            modifier = Modifier.fillMaxSize(),
+            painter = painterResource(id = R.drawable.day),
+            contentDescription = "",
+            contentScale = ContentScale.Crop
+        )
+    }
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
-            MyAppBar(navController = navController)
-            LocationAndDate(weather = weather)
-            WeatherIconAndDescription(weather = weather)
+        MyAppBar(navController = navController)
+        LocationAndDate(weather = weather)
+        WeatherIconAndDescription(weather = weather)
 
-        }
     }
 
 }
-
 
 @Composable
 fun MyAppBar(navController: NavController) {
@@ -189,8 +227,8 @@ fun LocationAndDate(weather: Weather) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
         Icon(
             modifier = Modifier
-                .size(20.dp)
-                .padding(top = 1.dp),
+                .size(25.dp)
+                .padding(top = 4.dp),
             imageVector = Icons.Rounded.LocationOn,
             contentDescription = "location icon",
             tint = MyColors().text.value
@@ -228,13 +266,48 @@ fun WeatherIconAndDescription(weather: Weather) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
 
-        Image(
-            modifier = Modifier.size(80.dp),
-            painter = painterResource(id = R.drawable.m01d),
-            contentDescription = "icon"
+        Column() {
+
+            Image(
+                modifier = Modifier.size(80.dp),
+                painter = painterResource(id = R.drawable.m01d),
+                contentDescription = "icon"
+            )
+            Row {
+
+            }
+        }
+
+
+        Text(
+            text = "25°",
+            fontSize = 60.sp,
+            color = MyColors().text.value,
         )
 
 
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
