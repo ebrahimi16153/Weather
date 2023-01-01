@@ -51,6 +51,6 @@ fun formatDaysDate(value:String):String{
         else -> "Fridays"
     }
 
-    return "$fullDay,$month,$dayOfMonth "
+    return "$fullDay, $month $dayOfMonth "
 
 }
