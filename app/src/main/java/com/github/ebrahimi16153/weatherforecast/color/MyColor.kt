@@ -5,10 +5,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import com.github.ebrahimi16153.weatherforecast.ui.theme.darkBackground
-import com.github.ebrahimi16153.weatherforecast.ui.theme.darkText
-import com.github.ebrahimi16153.weatherforecast.ui.theme.lightBackground
-import com.github.ebrahimi16153.weatherforecast.ui.theme.lightText
+import com.github.ebrahimi16153.weatherforecast.ui.theme.*
 
 
 @SuppressLint("ComposableNaming")
@@ -21,6 +18,9 @@ fun MyColors(dark: Boolean = isSystemInDarkTheme()): ColorModel {
             },
             text = remember {
                 mutableStateOf(darkText)
+            },
+            sheetBackground =  remember {
+                mutableStateOf(darkSheet)
             }
         )
     } else {
@@ -31,8 +31,9 @@ fun MyColors(dark: Boolean = isSystemInDarkTheme()): ColorModel {
             text = remember {
                 mutableStateOf(lightText)
             },
-
-
+            sheetBackground = remember {
+                mutableStateOf(lightSheet)
+            }
             )
     }
 }

@@ -2,6 +2,7 @@ package com.github.ebrahimi16153.weatherforecast.screen.main
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
@@ -19,7 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -64,11 +64,16 @@ fun MainScreen(
 @ExperimentalMaterialApi
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun MainScaffold(navController: NavController, city: String?, weather: Weather) {
+fun MainScaffold(
+    navController: NavController,
+    city: String?,
+    weather: Weather,
+    isDark: Boolean = isSystemInDarkTheme()
+) {
 
     // bottom sheet
     BottomSheetScaffold(
-        sheetBackgroundColor = Color(0xf09E6598),
+        sheetBackgroundColor = MyColors().sheetBackground.value,
         sheetShape = CircleShape.copy(
             topStart = CornerSize(15.dp),
             topEnd = CornerSize(15.dp),
@@ -210,13 +215,21 @@ fun Error() {
 
 @ExperimentalMaterialApi
 @Composable
-fun MainContent(weather: Weather, navController: NavController) {
+fun MainContent(
+    weather: Weather,
+    navController: NavController,
+    isDark: Boolean = isSystemInDarkTheme()
+) {
 
     Column(modifier = Modifier.fillMaxSize()) {
 
         Image(
             modifier = Modifier.fillMaxSize(),
-            painter = painterResource(id = R.drawable.day),
+            painter = if (isDark) {
+                painterResource(id = R.drawable.night)
+            } else {
+                painterResource(id = R.drawable.day)
+            },
             contentDescription = "",
             contentScale = ContentScale.Crop
         )
