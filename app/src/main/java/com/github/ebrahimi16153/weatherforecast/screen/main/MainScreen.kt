@@ -134,10 +134,7 @@ fun MainScaffold(
             ) {
                 //bottom of Bottom sheet
 
-                Text(
-                    text = "Bottom sheet",
-                    fontSize = 60.sp
-                )
+           ListOfWeek(navController = navController, weather = weather)
             }
         },
         sheetPeekHeight = 50.dp

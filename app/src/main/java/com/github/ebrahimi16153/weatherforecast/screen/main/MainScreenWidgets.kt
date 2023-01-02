@@ -3,6 +3,8 @@ package com.github.ebrahimi16153.weatherforecast.screen.main
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.LocationOn
@@ -15,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -22,7 +25,9 @@ import com.airbnb.lottie.compose.*
 import com.github.ebrahimi16153.weatherforecast.R
 import com.github.ebrahimi16153.weatherforecast.color.MyColors
 import com.github.ebrahimi16153.weatherforecast.model.Weather
+import com.github.ebrahimi16153.weatherforecast.model.WeatherItem
 import com.github.ebrahimi16153.weatherforecast.util.formatDate
+import com.github.ebrahimi16153.weatherforecast.util.formatDays
 import com.github.ebrahimi16153.weatherforecast.util.formatDaysDate
 import com.github.ebrahimi16153.weatherforecast.util.weatherCondition
 import kotlin.math.roundToInt
@@ -117,7 +122,11 @@ fun MainContent(
         MyAppBar(navController = navController)
         LocationAndDate(weather = weather)
         WeatherIconAndDescription(weather = weather)
-        Column(modifier = Modifier.fillMaxSize().padding(bottom = 70.dp), verticalArrangement = Arrangement.Bottom) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 70.dp), verticalArrangement = Arrangement.Bottom
+        ) {
             HumidityAndWindAndPressure(weather = weather)
         }
 
@@ -293,3 +302,72 @@ fun HumidityAndWindAndPressure(weather: Weather) {
     }
 
 }
+
+
+@Composable
+fun ListOfWeek(navController: NavController, weather: Weather) {
+    val list: List<WeatherItem>? = weather.list
+    Text(
+        modifier = Modifier.fillMaxWidth(),
+        text = "This Week",
+        textAlign = TextAlign.Center,
+        color = MyColors().text.value,
+        style = MaterialTheme.typography.caption
+    )
+    Spacer(modifier = Modifier.width(100.dp))
+    LazyColumn {
+        items(items = list!!) {
+
+            RowOfWeek(navController = navController, item = it)
+
+        }
+    }
+
+
+}
+
+@Composable
+fun RowOfWeek(navController: NavController, item: WeatherItem) {
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(20.dp), horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+
+        Text(
+            text = "${item.dt?.let { formatDays(it) }}",
+            textAlign = TextAlign.Center,
+            color = MyColors().text.value,
+            style = MaterialTheme.typography.caption
+        )
+        Image(
+            modifier = Modifier.size(30.dp),
+            painter = painterResource(id = weatherCondition(item.weather?.get(0)?.icon.toString())),
+            contentDescription = ""
+        )
+        Text(
+            text = "${item.weather?.get(0)?.description}",
+            textAlign = TextAlign.Center,
+            color = MyColors().text.value,
+            style = MaterialTheme.typography.caption
+        )
+
+        Row(horizontalArrangement = Arrangement.Center) {
+            Text(
+                text = "${item.temp?.max?.toInt()}° | ${item.temp?.min?.toInt()}°",
+                textAlign = TextAlign.Center,
+                color = MyColors().text.value,
+                style = MaterialTheme.typography.caption
+            )
+        }
+
+
+    }
+
+}
+
+
+
+
+
