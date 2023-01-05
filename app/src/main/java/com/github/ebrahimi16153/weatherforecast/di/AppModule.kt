@@ -1,5 +1,7 @@
 package com.github.ebrahimi16153.weatherforecast.di
 
+import com.github.ebrahimi16153.weatherforecast.data.Database
+import com.github.ebrahimi16153.weatherforecast.data.WeatherDao
 import com.github.ebrahimi16153.weatherforecast.network.WeatherApi
 import com.github.ebrahimi16153.weatherforecast.util.BASE_URL
 import dagger.Module
@@ -16,6 +18,11 @@ import javax.inject.Singleton
 class AppModule {
 
 
+    //di for Dao
+    @Singleton
+    @Provides
+    fun providesWeatherDao(database: Database): WeatherDao = database.dataBase()
+
 
     // di for retrofit api
     @Provides
@@ -25,5 +32,4 @@ class AppModule {
             .addConverterFactory(GsonConverterFactory.create()).build()
             .create(WeatherApi::class.java)
     }
-
 }

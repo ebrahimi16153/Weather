@@ -1,63 +1,101 @@
 package com.github.ebrahimi16153.weatherforecast.screen.main
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.LocationOn
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.airbnb.lottie.compose.*
-import com.github.ebrahimi16153.weatherforecast.R
 import com.github.ebrahimi16153.weatherforecast.color.MyColors
 import com.github.ebrahimi16153.weatherforecast.data.DataOrException
+import com.github.ebrahimi16153.weatherforecast.model.CityDb
 import com.github.ebrahimi16153.weatherforecast.model.Weather
-import com.github.ebrahimi16153.weatherforecast.util.formatDate
-import com.github.ebrahimi16153.weatherforecast.util.formatDaysDate
-import com.github.ebrahimi16153.weatherforecast.util.weatherCondition
+import com.github.ebrahimi16153.weatherforecast.navigation.WeatherScreenName
+import com.github.ebrahimi16153.weatherforecast.viewmodel.CityViewModel
 import com.github.ebrahimi16153.weatherforecast.viewmodel.MainViewModel
-import kotlin.math.roundToInt
+import com.github.ebrahimi16153.weatherforecast.widgets.CommonTextField
 
 @ExperimentalMaterialApi
 @Composable
 fun MainScreen(
     navController: NavController,
     mainViewModel: MainViewModel = hiltViewModel(),
-    city: String?
+    cityViewModel: CityViewModel = hiltViewModel()
 ) {
 
-    val weatherData = produceState<DataOrException<Weather, Boolean, Exception>>(
-        initialValue = DataOrException(isLoading = true)
-    ) {
-        value = mainViewModel.getWeather(city = city ?: "hashtgerd")
-    }.value
+    val cityFromDb = cityViewModel.cityList.collectAsState().value
 
-    if (weatherData.isLoading == true) {
+    if (cityFromDb.isNotEmpty()) {
+        val city = cityFromDb[0].city
+        val weatherData = produceState<DataOrException<Weather, Boolean, Exception>>(
+            initialValue = DataOrException(isLoading = true)
+        ) {
+            value = mainViewModel.getWeather(city = city)
+        }.value
 
-        Loading()
-    } else if (weatherData.data != null) {
+        if (weatherData.isLoading == true) {
 
-        MainScaffold(navController = navController, weather = weatherData.data)
-    } else if (weatherData.exception?.message?.isNotEmpty() == true) {
+            Loading()
+        } else if (weatherData.data != null) {
 
-        Error()
+            MainScaffold(navController = navController, weather = weatherData.data)
+        } else if (weatherData.exception?.message?.isNotEmpty() == true) {
+
+            Error()
+        }
+    } else {
+
+        FindCity(navController = navController,cityViewModel = cityViewModel)
+    }
+
+
+}
+
+@Composable
+fun FindCity(navController: NavController,cityViewModel: CityViewModel) {
+
+    val cityQuery = remember{
+        mutableStateOf("")
+    }
+
+    val validCity = remember(cityQuery.value) {
+        cityQuery.value.trim().isNotEmpty()
+    }
+
+    Surface(modifier = Modifier.fillMaxSize(), color = MyColors().background.value) {
+
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Text(
+                text = "Enter your city ;)",
+                color = MyColors().text.value,
+                style = MaterialTheme.typography.caption
+            )
+
+            CommonTextField(valueState = cityQuery, placeHolder = "where do you live", onAction = KeyboardActions{
+                if (!validCity) return@KeyboardActions
+                 cityViewModel.deleteAllCity()
+                cityViewModel.insertCity(CityDb(city = cityQuery.value.trim()))
+                cityQuery.value = ""
+                navController.popBackStack()
+                navController.navigate(WeatherScreenName.MainScreen.name)
+            } )
+
+
+        }
+
     }
 }
 

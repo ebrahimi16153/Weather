@@ -22,7 +22,7 @@ fun Navigation(){
         
         //Main screen
         composable(WeatherScreenName.MainScreen.name){
-            MainScreen(navController = navController, city = "hashtgerd")
+            MainScreen(navController = navController)
         }
 
 
