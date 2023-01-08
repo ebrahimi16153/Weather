@@ -38,7 +38,12 @@ fun CommonTextField(
         colors = TextFieldDefaults.outlinedTextFieldColors(
             textColor = MyColors().text.value,
             cursorColor = MyColors().text.value,
-
+            backgroundColor = MyColors().sheetBackground.value,
+            disabledBorderColor = MyColors().text.value,
+            focusedBorderColor = MyColors().background.value,
+            unfocusedBorderColor = MyColors().background.value,
+            disabledLabelColor = MyColors().text.value,
+            focusedLabelColor = MyColors().text.value
         ),
         shape = RoundedCornerShape(15.dp),
 

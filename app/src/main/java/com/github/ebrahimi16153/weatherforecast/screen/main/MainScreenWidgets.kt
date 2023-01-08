@@ -26,6 +26,7 @@ import com.github.ebrahimi16153.weatherforecast.R
 import com.github.ebrahimi16153.weatherforecast.color.MyColors
 import com.github.ebrahimi16153.weatherforecast.model.Weather
 import com.github.ebrahimi16153.weatherforecast.model.WeatherItem
+import com.github.ebrahimi16153.weatherforecast.navigation.WeatherScreenName
 import com.github.ebrahimi16153.weatherforecast.util.formatDate
 import com.github.ebrahimi16153.weatherforecast.util.formatDays
 import com.github.ebrahimi16153.weatherforecast.util.formatDaysDate
@@ -142,7 +143,10 @@ fun MyAppBar(navController: NavController) {
         backgroundColor = Color.Transparent,
         elevation = 0.dp,
         actions = {
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = { 
+                navController.popBackStack()
+                navController.navigate(WeatherScreenName.FindCity.name)
+            }) {
                 Icon(
                     imageVector = Icons.Rounded.Search,
                     contentDescription = "Search",

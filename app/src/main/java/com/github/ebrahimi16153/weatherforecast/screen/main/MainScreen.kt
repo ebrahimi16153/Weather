@@ -1,6 +1,7 @@
 package com.github.ebrahimi16153.weatherforecast.screen.main
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
@@ -19,6 +20,7 @@ import com.github.ebrahimi16153.weatherforecast.data.DataOrException
 import com.github.ebrahimi16153.weatherforecast.model.CityDb
 import com.github.ebrahimi16153.weatherforecast.model.Weather
 import com.github.ebrahimi16153.weatherforecast.navigation.WeatherScreenName
+import com.github.ebrahimi16153.weatherforecast.screen.findcity.FindCity
 import com.github.ebrahimi16153.weatherforecast.viewmodel.CityViewModel
 import com.github.ebrahimi16153.weatherforecast.viewmodel.MainViewModel
 import com.github.ebrahimi16153.weatherforecast.widgets.CommonTextField
@@ -48,8 +50,12 @@ fun MainScreen(
 
             MainScaffold(navController = navController, weather = weatherData.data)
         } else if (weatherData.exception?.message?.isNotEmpty() == true) {
-
+                if (weatherData.exception.message.toString() == "HTTP 404 Not Found"){
+                    FindCity(navController = navController, cityViewModel =cityViewModel )
+                }else{
             Error()
+                }
+
         }
     } else {
 
@@ -59,45 +65,6 @@ fun MainScreen(
 
 }
 
-@Composable
-fun FindCity(navController: NavController,cityViewModel: CityViewModel) {
-
-    val cityQuery = remember{
-        mutableStateOf("")
-    }
-
-    val validCity = remember(cityQuery.value) {
-        cityQuery.value.trim().isNotEmpty()
-    }
-
-    Surface(modifier = Modifier.fillMaxSize(), color = MyColors().background.value) {
-
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            Text(
-                text = "Enter your city ;)",
-                color = MyColors().text.value,
-                style = MaterialTheme.typography.caption
-            )
-
-            CommonTextField(valueState = cityQuery, placeHolder = "where do you live", onAction = KeyboardActions{
-                if (!validCity) return@KeyboardActions
-                 cityViewModel.deleteAllCity()
-                cityViewModel.insertCity(CityDb(city = cityQuery.value.trim()))
-                cityQuery.value = ""
-                navController.popBackStack()
-                navController.navigate(WeatherScreenName.MainScreen.name)
-            } )
-
-
-        }
-
-    }
-}
 
 @ExperimentalMaterialApi
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
